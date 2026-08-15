@@ -1,0 +1,20 @@
+{
+  "name": "@dhicoc/dsh--ctws-src",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "skills",
+    "cordis.patch.yml"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "test": "node _selftest.mjs"
+  },
+  "license": "MIT"
+}

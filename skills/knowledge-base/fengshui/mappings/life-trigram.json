@@ -1,0 +1,47 @@
+{
+  "name": "命卦速查",
+  "description": "根据出生年份计算命卦（八宅派），确定东四命/西四命分类及吉凶方位",
+  "source": "《八宅明镜》",
+  "version": "1.0.0",
+
+  "formula": {
+    "male":   "'(100 - 年份后两位) % 9'，余0→9",
+    "female": "'(年份后两位 - 4) % 9'，余0→9"
+  },
+
+  "remainder_to_trigram": {
+    "1": { "trigram": "坎", "pinyin": "kan", "wuxing": "水", "group": "东四命", "gua_number": 1 },
+    "2": { "trigram": "坤", "pinyin": "kun", "wuxing": "土", "group": "西四命", "gua_number": 2 },
+    "3": { "trigram": "震", "pinyin": "zhen", "wuxing": "木", "group": "东四命", "gua_number": 3 },
+    "4": { "trigram": "巽", "pinyin": "xun", "wuxing": "木", "group": "东四命", "gua_number": 4 },
+    "5": { "description": "男命寄坤(2)，女命寄艮(8)" },
+    "6": { "trigram": "乾", "pinyin": "qian", "wuxing": "金", "group": "西四命", "gua_number": 6 },
+    "7": { "trigram": "兑", "pinyin": "dui", "wuxing": "金", "group": "西四命", "gua_number": 7 },
+    "8": { "trigram": "艮", "pinyin": "gen", "wuxing": "土", "group": "西四命", "gua_number": 8 },
+    "9": { "trigram": "离", "pinyin": "li", "wuxing": "火", "group": "东四命", "gua_number": 9 }
+  },
+
+  "examples": [
+    { "year": 1990, "gender": "男", "calc": "(100-90)%9=1", "trigram": "坎", "group": "东四命" },
+    { "year": 1990, "gender": "女", "calc": "(90-4)%9=5", "trigram": "艮(5寄8)", "group": "西四命" },
+    { "year": 1985, "gender": "男", "calc": "(100-85)%9=6", "trigram": "乾", "group": "西四命" },
+    { "year": 2000, "gender": "男", "calc": "(100-0)%9=1", "trigram": "坎", "group": "东四命" },
+    { "year": 2000, "gender": "女", "calc": "(0-4)%9=-4→5→艮", "trigram": "艮(5寄8)", "group": "西四命" }
+  ],
+
+  "east_group": {
+    "name": "东四命",
+    "trigrams": ["坎(1)", "震(3)", "巽(4)", "离(9)"],
+    "lucky_elements": ["水", "木", "火"],
+    "lucky_directions": ["东", "东南", "南", "北"],
+    "unlucky_directions": ["西", "西北", "西南", "东北"]
+  },
+
+  "west_group": {
+    "name": "西四命",
+    "trigrams": ["乾(6)", "坤(2)", "艮(8)", "兑(7)"],
+    "lucky_elements": ["金", "土"],
+    "lucky_directions": ["西", "西北", "西南", "东北"],
+    "unlucky_directions": ["东", "东南", "南", "北"]
+  }
+}

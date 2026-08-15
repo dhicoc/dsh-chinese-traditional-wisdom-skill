@@ -1,0 +1,64 @@
+# OS files
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Vite / TypeScript build artifacts
+dist/
+coverage/
+.vite/
+.cache/
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+
+# Local agent state (not project code)
+.agents/
+.claude/
+.codex/
+.gstack/
+.inscode/
+.qwen/
+.workbuddy/
+.worktrees/
+.playwright-mcp/
+.impeccable.md
+
+# Local UI dev artifacts / screenshots / test reports
+*.png
+apps/visual/_final-*.png
+apps/visual/playwright-report*/
+apps/visual/test-results*/
+apps/visual/pw_*.log
+apps/visual/.playwright-cli/
+artifacts/tmp/
+prototype/
+
+# Local conversation exports and attachments
+attachments/
+qwen-code-export-*.md

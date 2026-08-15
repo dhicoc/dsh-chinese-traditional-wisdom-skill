@@ -1,0 +1,46 @@
+{
+  "name": "二十四山向",
+  "description": "风水罗盘二十四山方位表，每个山向对应15度。用于形势理气分析中的方位判断",
+  "source": "综合各派罗盘标准",
+  "version": "1.0.0",
+
+  "notes": "二十四山由八天干(甲乙丙丁庚辛壬癸)+四维(乾坤艮巽)+十二地支(子丑寅卯辰巳午未申酉戌亥)组成。每山15度，共360度",
+
+  "data": [
+    { "order": 1,  "mountain": "壬", "direction": "北偏西", "degree_start": 337.5, "degree_end": 352.5, "wuxing": "水", "yin_yang": "阳", "sanhe": "水局长生", "bagua": "坎" },
+    { "order": 2,  "mountain": "子", "direction": "正北",   "degree_start": 352.5, "degree_end": 7.5,   "wuxing": "水", "yin_yang": "阴", "sanhe": "水局帝旺", "bagua": "坎" },
+    { "order": 3,  "mountain": "癸", "direction": "北偏东", "degree_start": 7.5,   "degree_end": 22.5,  "wuxing": "水", "yin_yang": "阴", "sanhe": "水局墓库", "bagua": "坎" },
+    { "order": 4,  "mountain": "丑", "direction": "东北偏北", "degree_start": 22.5,  "degree_end": 37.5,  "wuxing": "土", "yin_yang": "阴", "sanhe": "金局墓库", "bagua": "艮" },
+    { "order": 5,  "mountain": "艮", "direction": "正东北", "degree_start": 37.5,  "degree_end": 52.5,  "wuxing": "土", "yin_yang": "阳", "sanhe": "金局绝地", "bagua": "艮" },
+    { "order": 6,  "mountain": "寅", "direction": "东北偏东", "degree_start": 52.5,  "degree_end": 67.5,  "wuxing": "木", "yin_yang": "阳", "sanhe": "火局长生", "bagua": "艮" },
+    { "order": 7,  "mountain": "甲", "direction": "东偏北", "degree_start": 67.5,  "degree_end": 82.5,  "wuxing": "木", "yin_yang": "阳", "sanhe": "木局临官", "bagua": "震" },
+    { "order": 8,  "mountain": "卯", "direction": "正东",   "degree_start": 82.5,  "degree_end": 97.5,  "wuxing": "木", "yin_yang": "阴", "sanhe": "木局帝旺", "bagua": "震" },
+    { "order": 9,  "mountain": "乙", "direction": "东偏南", "degree_start": 97.5,  "degree_end": 112.5, "wuxing": "木", "yin_yang": "阴", "sanhe": "木局墓库", "bagua": "震" },
+    { "order": 10, "mountain": "辰", "direction": "东南偏东", "degree_start": 112.5, "degree_end": 127.5, "wuxing": "土", "yin_yang": "阳", "sanhe": "水局墓库", "bagua": "巽" },
+    { "order": 11, "mountain": "巽", "direction": "正东南", "degree_start": 127.5, "degree_end": 142.5, "wuxing": "木", "yin_yang": "阳", "sanhe": "水局绝地", "bagua": "巽" },
+    { "order": 12, "mountain": "巳", "direction": "东南偏南", "degree_start": 142.5, "degree_end": 157.5, "wuxing": "火", "yin_yang": "阳", "sanhe": "金局长生", "bagua": "巽" },
+    { "order": 13, "mountain": "丙", "direction": "南偏东", "degree_start": 157.5, "degree_end": 172.5, "wuxing": "火", "yin_yang": "阳", "sanhe": "火局临官", "bagua": "离" },
+    { "order": 14, "mountain": "午", "direction": "正南",   "degree_start": 172.5, "degree_end": 187.5, "wuxing": "火", "yin_yang": "阴", "sanhe": "火局帝旺", "bagua": "离" },
+    { "order": 15, "mountain": "丁", "direction": "南偏西", "degree_start": 187.5, "degree_end": 202.5, "wuxing": "火", "yin_yang": "阴", "sanhe": "火局墓库", "bagua": "离" },
+    { "order": 16, "mountain": "未", "direction": "西南偏南", "degree_start": 202.5, "degree_end": 217.5, "wuxing": "土", "yin_yang": "阴", "sanhe": "木局墓库", "bagua": "坤" },
+    { "order": 17, "mountain": "坤", "direction": "正西南", "degree_start": 217.5, "degree_end": 232.5, "wuxing": "土", "yin_yang": "阳", "sanhe": "木局绝地", "bagua": "坤" },
+    { "order": 18, "mountain": "申", "direction": "西南偏西", "degree_start": 232.5, "degree_end": 247.5, "wuxing": "金", "yin_yang": "阳", "sanhe": "水局长生", "bagua": "坤" },
+    { "order": 19, "mountain": "庚", "direction": "西偏南", "degree_start": 247.5, "degree_end": 262.5, "wuxing": "金", "yin_yang": "阳", "sanhe": "金局临官", "bagua": "兑" },
+    { "order": 20, "mountain": "酉", "direction": "正西",   "degree_start": 262.5, "degree_end": 277.5, "wuxing": "金", "yin_yang": "阴", "sanhe": "金局帝旺", "bagua": "兑" },
+    { "order": 21, "mountain": "辛", "direction": "西偏北", "degree_start": 277.5, "degree_end": 292.5, "wuxing": "金", "yin_yang": "阴", "sanhe": "金局墓库", "bagua": "兑" },
+    { "order": 22, "mountain": "戌", "direction": "西北偏西", "degree_start": 292.5, "degree_end": 307.5, "wuxing": "土", "yin_yang": "阳", "sanhe": "火局墓库", "bagua": "乾" },
+    { "order": 23, "mountain": "乾", "direction": "正西北", "degree_start": 307.5, "degree_end": 322.5, "wuxing": "金", "yin_yang": "阳", "sanhe": "火局绝地", "bagua": "乾" },
+    { "order": 24, "mountain": "亥", "direction": "西北偏北", "degree_start": 322.5, "degree_end": 337.5, "wuxing": "水", "yin_yang": "阳", "sanhe": "木局长生", "bagua": "乾" }
+  ],
+
+  "trigram_to_mountains": {
+    "坎": ["壬", "子", "癸"],
+    "艮": ["丑", "艮", "寅"],
+    "震": ["甲", "卯", "乙"],
+    "巽": ["辰", "巽", "巳"],
+    "离": ["丙", "午", "丁"],
+    "坤": ["未", "坤", "申"],
+    "兑": ["庚", "酉", "辛"],
+    "乾": ["戌", "乾", "亥"]
+  }
+}
