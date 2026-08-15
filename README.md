@@ -4,9 +4,6 @@
 >
 > *A dsh (DeepSeek Harness) Cordis plugin that packages the "Chinese Traditional Wisdom" Skill (玄枢) so you can invoke a local-first traditional-culture consultation workflow directly from a dsh conversation.*
 
-<p align="center">
-  <img src="skills/chinese-traditional-wisdom-ai-agent-workflow.png" alt="玄枢" width="140" />
-</p>
 
 ## 这是什么
 
