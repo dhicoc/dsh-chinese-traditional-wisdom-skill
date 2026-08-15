@@ -1,5 +1,5 @@
 {
-  "name": "@dhicoc/dsh--ctws-src",
+  "name": "@dhicoc/dsh-chinese-traditional-wisdom-skill",
   "version": "1.0.0",
   "type": "module",
   "main": "lib/index.js",
