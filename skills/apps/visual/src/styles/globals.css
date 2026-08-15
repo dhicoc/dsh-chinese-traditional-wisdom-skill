@@ -1,0 +1,348 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   观象台 · 宋韵极简（宣纸主题）
+   暖白纸光，墨为骨，朱砂点睛；全部颜色经 CSS 变量分派，单一浅色主题。
+   ============================================================ */
+
+/* ── 宣纸（浅色 · 默认）────────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  /* 页面三元色（供 rgb()/rgba() 复合） */
+  --background: 243 238 225;   /* 宣纸 */
+  --foreground: 46 40 35;      /* 墨色 */
+  --surface: 247 243 232;      /* 浮起纸面 */
+  --surface-raised: 250 246 236;
+  --border: 217 209 189;       /* 发丝线 */
+  --cinnabar: 178 58 38;       /* 朱砂 */
+  --jade: 61 96 83;            /* 松烟绿 */
+  --gold: 138 109 53;          /* 鎏金 */
+  --talisman: 138 109 53;
+  --spirit: 111 102 89;        /* 淡墨 */
+  --wood: 74 114 80;
+  --fire: 178 58 38;
+  --earth: 166 124 68;
+  --metal: 133 124 108;
+  --water: 61 90 110;
+  --shadow-rgb: 46 40 35;
+
+  /* tailwind token 三元色 */
+  --ink-950: 243 238 225;
+  --ink-900: 247 243 232;
+  --ink-850: 239 233 218;
+  --ink-800: 231 224 207;
+  --ink-700: 217 209 189;
+  --ink-600: 199 189 165;
+  --jade-50: 34 29 23;
+  --jade-100: 46 40 35;
+  --jade-200: 69 62 54;
+  --jade-300: 92 83 72;
+  --jade-400: 111 102 89;
+  --jade-500: 61 96 83;
+  --jade-600: 47 76 65;
+  --cinnabar-500: 178 58 38;
+  --cinnabar-600: 143 45 29;
+  --cinnabar-700: 110 33 21;
+  --gold-400: 138 109 53;
+  --gold-500: 125 95 42;
+  --gold-600: 95 72 32;
+  --talisman-400: 138 109 53;
+  --talisman-500: 125 95 42;
+  --talisman-600: 95 72 32;
+  --white: 46 40 35;   /* 墨（border-white/10 → 发丝墨线） */
+  --black: 92 83 72;   /* 暖影（bg-black/30 → 纸面下沉） */
+
+  /* 图表完整色（SVG fill/stroke 直引 var） */
+  --chart-page: #f3eee1;
+  --chart-bg: #f6f2e7;
+  --chart-surface: #f7f3e8;
+  --chart-inset: #efe9da;
+  --chart-deep: #e7e0cf;
+  --chart-band: #ece5d3;
+  --chart-line: #d9d1bd;
+  --chart-line-strong: #c7bda5;
+  --chart-line-faint: #b9ae94;
+  --chart-text: #2e2823;
+  --chart-text-sub: #5c5348;
+  --chart-text-mid: #6f6659;
+  --chart-text-faint: #8a8172;
+  --chart-good: #4a7250;
+  --chart-good-soft: #7fa183;
+  --chart-bad: #b23a26;
+  --chart-neutral: #8a8172;
+  --c-cinnabar: #b23a26;
+  --c-cinnabar-deep: #8f2d1d;
+  --c-jade: #3d6053;
+  --c-gold: #8a6d35;
+  --wz-wood: #4a7250;
+  --wz-fire: #b23a26;
+  --wz-earth: #a67c44;
+  --wz-metal: #857c6c;
+  --wz-water: #3d5a6e;
+
+  /* 页面/天盘渐变与纹理 */
+  --page-grad-1: #f6f2e7;
+  --page-grad-2: #f3eee1;
+  --page-grad-3: #efe9da;
+  --tianpan-grad-1: #f6f2e7;
+  --tianpan-grad-2: #f3eee1;
+  --tianpan-grad-3: #f0e9d9;
+  --tianpan-grad-4: #ece5d3;
+  --texture-blend: multiply;
+  --texture-opacity: 0.05;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: rgb(var(--background));
+}
+
+body {
+  min-height: 100dvh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 16% 12%, rgb(var(--gold) / 0.05), transparent 30rem),
+    radial-gradient(circle at 82% 4%, rgb(var(--cinnabar) / 0.03), transparent 26rem),
+    linear-gradient(180deg, var(--page-grad-1) 0%, var(--page-grad-2) 42%, var(--page-grad-3) 100%);
+  color: rgb(var(--foreground));
+  font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+/* 纸纹理覆层（feTurbulence 微噪，浅色正片叠底） */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: var(--texture-opacity);
+  mix-blend-mode: var(--texture-blend);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 全局键盘焦点态：朱砂描边 */
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+[role="tab"]:focus-visible {
+  outline: 1.5px solid rgb(var(--cinnabar) / 0.7);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgb(var(--cinnabar) / 0.14);
+  color: rgb(var(--foreground));
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* 纸面细格（极淡暖调，近似宋版书界行） */
+.instrument-grid {
+  background-image:
+    linear-gradient(rgb(var(--gold) / 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--gold) / 0.035) 1px, transparent 1px);
+  background-size: 52px 52px, 52px 52px;
+}
+
+/* 卡片：方角 + 发丝线 + 轻影，无厚重投影 */
+.rounded-panel,
+.rounded-card {
+  box-shadow:
+    0 1px 0 rgb(var(--shadow-rgb) / 0.03),
+    0 14px 36px rgb(var(--shadow-rgb) / 0.07);
+}
+
+/* 天象背景：渐变底（粒子由 Canvas 按主题变量绘制） */
+.dynamic-tianpan-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 22% 18%, rgb(var(--gold) / 0.06), transparent 28rem),
+    radial-gradient(circle at 82% 12%, rgb(var(--cinnabar) / 0.035), transparent 24rem),
+    linear-gradient(145deg, var(--tianpan-grad-1) 0%, var(--tianpan-grad-2) 42%, var(--tianpan-grad-3) 68%, var(--tianpan-grad-4) 100%);
+  isolation: isolate;
+}
+
+.tianpan-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@keyframes tianpan-disc-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── UI 动画原语（ct- 前缀避免冲突）── */
+@keyframes ct-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ct-slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ct-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes ct-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.ct-animate-fade-in { animation: ct-fade-in 200ms ease-out both; }
+.ct-animate-slide-up { animation: ct-slide-up 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ct-animate-scale-in { animation: ct-scale-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ct-shimmer {
+  background: linear-gradient(90deg, transparent, rgb(var(--foreground) / 0.05), transparent);
+  background-size: 200% 100%;
+  animation: ct-shimmer 1.6s infinite;
+}
+
+/* 错峰延迟工具类 */
+.ct-delay-1 { animation-delay: 60ms; }
+.ct-delay-2 { animation-delay: 120ms; }
+.ct-delay-3 { animation-delay: 180ms; }
+.ct-delay-4 { animation-delay: 240ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dynamic-tianpan-background,
+  .tianpan-canvas {
+    animation: none;
+  }
+  .ct-animate-fade-in,
+  .ct-animate-slide-up,
+  .ct-animate-scale-in,
+  .ct-shimmer {
+    animation: none;
+  }
+}
+
+/* 骨架面板：细影，去辉光 */
+.app-sidebar,
+.app-topbar,
+.console-panel {
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgb(var(--shadow-rgb) / 0.03),
+    0 14px 36px rgb(var(--shadow-rgb) / 0.06);
+}
+
+.app-sidebar > *,
+.app-topbar > *,
+.console-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 品牌印记：朱砂印章自带分量，无需辉光 */
+.brand-seal {
+  box-shadow: none;
+}
+
+/* 导航悬浮：左侧朱砂落笔 */
+.sidebar-nav-item:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border-left: 2px solid transparent;
+  pointer-events: none;
+}
+
+.sidebar-nav-item:hover:after {
+  border-left-color: rgb(var(--cinnabar) / 0.55);
+}
+
+/* 工具磁贴悬浮：朱砂晕染 */
+.tool-tile:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgb(var(--cinnabar) / 0.05);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.tool-tile:hover:before {
+  opacity: 1;
+}
+
+/* Canvas 仪器面板：细线 */
+.canvas-stage {
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgb(var(--shadow-rgb) / 0.06),
+    0 12px 32px rgb(var(--shadow-rgb) / 0.07);
+}
+
+.canvas-stage:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(rgb(var(--gold) / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--gold) / 0.03) 1px, transparent 1px);
+  background-size: 42px 42px, 42px 42px;
+  opacity: 0.8;
+}
+
+.theme-canvas {
+  position: relative;
+  z-index: 1;
+  background: rgb(var(--surface));
+  box-shadow:
+    0 0 0 1px rgb(var(--shadow-rgb) / 0.08),
+    0 12px 32px rgb(var(--shadow-rgb) / 0.08);
+}
+
+.bazi-support-grid > * {
+  min-width: 0;
+}
+
+@media (min-width: 1280px) {
+  .bazi-console-grid > .order-1 {
+    order: 1;
+  }
+
+  .bazi-console-grid > .order-2 {
+    order: 2;
+  }
+}

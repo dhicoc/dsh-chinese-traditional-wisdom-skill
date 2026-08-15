@@ -1,0 +1,1 @@
+{"personA":{"birth":{"year":1992,"month":2,"day":29,"hour":23,"minute":59,"gender":"男"},"baziTimeContext":{"timeBasis":"civil-unverified","civilFallbackConfirmed":true}},"personB":{"birth":{"year":1996,"month":2,"day":29,"hour":0,"minute":0,"gender":"女"},"baziTimeContext":{"timeBasis":"civil-unverified","civilFallbackConfirmed":true}},"targetYear":2024}

@@ -1,0 +1,1 @@
+{"personA":{"birth":{"year":1990,"month":6,"day":15,"hour":12,"gender":"男"},"baziTimeContext":{"timeBasis":"civil-unverified","civilFallbackConfirmed":true},"surname":"张"},"personB":{"birth":{"year":1988,"month":3,"day":20,"hour":8,"gender":"女"},"baziTimeContext":{"timeBasis":"civil-unverified"},"surname":"李","givenName":"娜"},"scene":"invalid-scene","purpose":"装修"}
