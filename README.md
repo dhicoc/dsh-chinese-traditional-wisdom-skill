@@ -1,4 +1,4 @@
-# @dhicoc/dsh-chinese-traditional-wisdom-skill
+# dsh-chinese-traditional-wisdom-skill
 
 > 把「玄枢 · 中华传统智慧」Skill 封装为 **DeepSeek Harness（dsh）** 插件，让你在 dsh 对话里直接调用一套本地优先的中国传统文化咨询工作流。
 >
