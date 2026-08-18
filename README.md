@@ -1,5 +1,13 @@
 # dsh-chinese-traditional-wisdom-skill
 
+[![awesome · DSH plugin](https://awesome-dsh-plugin.com/badge.svg)](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)
+
+
+
+[![Awesome](https://awesome.re/badge.svg)](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)
+
+
+
 > 把「玄枢 · 中华传统智慧」Skill 封装为 **DeepSeek Harness（dsh）** 插件，让你在 dsh 对话里直接调用一套本地优先的中国传统文化咨询工作流。
 >
 > *A dsh (DeepSeek Harness) Cordis plugin that packages the "Chinese Traditional Wisdom" Skill (玄枢) so you can invoke a local-first traditional-culture consultation workflow directly from a dsh conversation.*
