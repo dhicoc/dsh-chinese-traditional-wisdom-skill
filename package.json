@@ -1,6 +1,6 @@
 {
   "name": "@dhicoc/dsh-chinese-traditional-wisdom-skill",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "type": "module",
   "main": "lib/index.js",
   "files": [
@@ -11,10 +11,28 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.1.7-rc.2": "compatible",
+        "0.2.0-rc.1": "compatible",
+        "0.2.0-rc.2": "compatible"
+      }
     }
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "scripts": {
     "test": "node _selftest.mjs"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.4",
+    "@deepseek-ai/dsh-skill": "^0.2.0-rc.2"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "~4.0.4",
+    "@deepseek-ai/dsh-skill": "^0.2.0-rc.2"
   },
   "license": "MIT"
 }
