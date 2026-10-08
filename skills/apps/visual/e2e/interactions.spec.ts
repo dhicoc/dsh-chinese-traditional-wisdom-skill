@@ -70,11 +70,87 @@ test.describe('SVG 图表双击放大与右键复制', () => {
     await expect(dialog).not.toBeVisible();
   });
 
-  test('右键 SVG 触发复制为图像（不出现浏览器默认菜单）', async ({ page }) => {
+  test('右键 SVG 复制可读取、非纯黑的 PNG 图像', async ({ page }) => {
+    await page.evaluate(() => {
+      type ClipboardPayload = Record<string, Blob | Promise<Blob>>;
+      class MockClipboardItem {
+        readonly payload: ClipboardPayload;
+
+        constructor(payload: ClipboardPayload) {
+          this.payload = payload;
+        }
+
+        async getType(type: string): Promise<Blob> {
+          return Promise.resolve(this.payload[type]);
+        }
+      }
+
+      const state = window as typeof window & { __copiedChartBlob?: Blob };
+      Object.defineProperty(window, 'ClipboardItem', { configurable: true, value: MockClipboardItem });
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: {
+          write: async (items: MockClipboardItem[]) => {
+            state.__copiedChartBlob = await items[0].getType('image/png');
+          },
+        },
+      });
+    });
+
     const chart = page.locator('[data-testid="radar-chart"]').locator('..');
-    // 右键应被组件 preventDefault，浏览器默认上下文菜单不弹出
-    // 这里校验右键后页面无致命错误且图表仍在
     await chart.click({ button: 'right' });
-    await expect(page.locator('[data-testid="radar-chart"]')).toBeVisible();
+    await expect(page.getByText('已复制图像到剪贴板')).toBeVisible();
+
+    const image = await page.evaluate(async () => {
+      const blob = (window as typeof window & { __copiedChartBlob?: Blob }).__copiedChartBlob;
+      if (!blob) return null;
+
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('copied PNG cannot be decoded'));
+        img.src = url;
+      });
+      URL.revokeObjectURL(url);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const context = canvas.getContext('2d');
+      if (!context) return null;
+      context.drawImage(img, 0, 0);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let sampled = 0;
+      let black = 0;
+      const colors = new Set<string>();
+      for (let y = 0; y < canvas.height; y += 12) {
+        for (let x = 0; x < canvas.width; x += 12) {
+          const offset = (y * canvas.width + x) * 4;
+          const r = pixels[offset];
+          const g = pixels[offset + 1];
+          const b = pixels[offset + 2];
+          if (r < 12 && g < 12 && b < 12) black += 1;
+          colors.add(`${Math.round(r / 16)},${Math.round(g / 16)},${Math.round(b / 16)}`);
+          sampled += 1;
+        }
+      }
+      return {
+        type: blob.type,
+        size: blob.size,
+        width: canvas.width,
+        height: canvas.height,
+        blackRatio: black / sampled,
+        colorCount: colors.size,
+      };
+    });
+
+    expect(image).not.toBeNull();
+    expect(image?.type).toBe('image/png');
+    expect(image?.size).toBeGreaterThan(1_000);
+    expect(image?.width).toBeGreaterThan(100);
+    expect(image?.height).toBeGreaterThan(100);
+    expect(image?.blackRatio).toBeLessThan(0.9);
+    expect(image?.colorCount).toBeGreaterThan(4);
   });
 });

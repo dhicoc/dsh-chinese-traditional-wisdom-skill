@@ -4,8 +4,22 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- 八字十神此前只按「目标天干索引 − 日主索引」查固定表，未使用日主自身五行，导致 100 组日主×天干中有 40 组错位：阳干日主在索引差 1、8 处把比劫与印的锚点插反，阴干日主有 6/10 组五行分界线整体偏移，并连带影响四柱与藏干十神、动态层的流年/流月/流日十神及报告文案。现改由五行生克与阴阳同异推导，与进阶分析既有口径一致。
+- Dashboard SVG 图表右键复制会丢失页面 CSS 变量、生成黑色 PNG，且异步渲染后可能失去剪贴板用户授权的问题；导出现在固化实际绘制样式并在右键手势内启动写入。
+
+### Security
+
+- `source-map-js` 升到已修补的 `1.2.2`（GHSA-68fv-2mgg-jv7q）。
+- 构建工具（`vite`、`typescript`、`tailwindcss`、`postcss`、`autoprefixer`、`@vitejs/plugin-react`）由 `dependencies` 归位到 `devDependencies`，使 `pnpm audit --prod` 只审计真正随静态产物考虑的依赖，不再把构建期传递依赖（`tailwindcss>chokidar>braces`）计为生产漏洞。
+
 ### Added
 
+- 皇极经世新增按需加载的 Three.js 六十四卦时间轮：64卦源序与六爻纹样、正卦/世卦/年卦三角色轨道、会运世积年核心、俯视/时间轮/巡行/分层控制，并保留二维 SVG 精读与 WebGL 降级。
+- 二十八星宿新增按需加载的 Three.js 三维星盘：28 宿四象分组、值日/本命双高亮、俯视/浑天/巡游/星环控制、指针与键盘选择，并保留二维 SVG 精读和 WebGL 降级。
+- 抽取通用 `ThreeChartHost`，统一 3D 图表的 OrbitControls、悬停滚轮捕获、相机距离、响应式、离屏暂停、Context Lost 回退和资源销毁。
+- 风水罗盘新增按需加载的 Three.js 三维交互模式：真实浅浮雕层盘、八卦实体爻线、俯视/立体/自转/分层控制、指针与键盘选择、WebGL/SVG 渐进降级；二维 SVG 继续作为精确阅读与导出默认。
 - 周易六十四卦完整知识切片：文王卦序、上下卦矩阵、六爻定位、卦辞/六爻辞/彖传、错综互变、六爻/梅花联动及独立 `engine:iching-lookup`。
 
 ### Changed

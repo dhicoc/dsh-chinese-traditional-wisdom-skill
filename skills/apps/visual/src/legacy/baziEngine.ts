@@ -266,21 +266,17 @@ export interface BaziDynamicLayer {
 }
 
 // ─── 十神 ───
+const SHENG_ELEMENT: Record<string, string> = { 木: '火', 火: '土', 土: '金', 金: '水', 水: '木' };
+const KE_ELEMENT: Record<string, string> = { 木: '土', 土: '水', 水: '火', 火: '金', 金: '木' };
 function getShiShen(dayStem: number, otherStem: number): string {
-  const d = dayStem, o = otherStem;
-  const diff = (o - d + 10) % 10;
-  const same = (d % 2 === 0) === (o % 2 === 0);
-  if (diff === 0) return same ? '比肩' : '劫财';
-  if (diff === 1) return same ? '偏印' : '正印';
-  if (diff === 2) return '食神';
-  if (diff === 3) return '伤官';
-  if (diff === 4) return '偏财';
-  if (diff === 5) return '正财';
-  if (diff === 6) return '七杀';
-  if (diff === 7) return '正官';
-  if (diff === 8) return same ? '比肩' : '劫财';
-  if (diff === 9) return same ? '偏印' : '正印';
-  return '';
+  const dayElement = STEM_WX[dayStem];
+  const otherElement = STEM_WX[otherStem];
+  const sameYinYang = STEM_YY[dayStem] === STEM_YY[otherStem];
+  if (dayElement === otherElement) return sameYinYang ? '比肩' : '劫财';
+  if (SHENG_ELEMENT[dayElement] === otherElement) return sameYinYang ? '食神' : '伤官';
+  if (KE_ELEMENT[dayElement] === otherElement) return sameYinYang ? '偏财' : '正财';
+  if (KE_ELEMENT[otherElement] === dayElement) return sameYinYang ? '七杀' : '正官';
+  return sameYinYang ? '偏印' : '正印';
 }
 
 // ─── 本地近似：节气日近似表 ───

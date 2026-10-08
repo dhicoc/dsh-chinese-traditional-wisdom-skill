@@ -5,7 +5,7 @@
  * 增强：支持坐向旋转、飞星吉凶叠加、八宅游年星叠加。
  */
 
-interface PalaceOverlay {
+export interface PalaceOverlay {
   palace?: string;
   starNum?: number;
   starName?: string;
@@ -23,14 +23,14 @@ interface FengshuiCompassProps {
   overlay?: Record<string, PalaceOverlay>;
 }
 
-const MOUNTAINS = [
+export const MOUNTAINS = [
   '壬', '子', '癸', '丑', '艮', '寅', '甲', '卯', '乙', '辰', '巽', '巳',
   '丙', '午', '丁', '未', '坤', '申', '庚', '酉', '辛', '戌', '乾', '亥',
 ];
 
-const YANG_MOUNTAINS = new Set(['壬', '甲', '丙', '庚', '乾', '艮', '子', '寅', '辰', '午', '申', '戌']);
+export const YANG_MOUNTAINS = new Set(['壬', '甲', '丙', '庚', '乾', '艮', '子', '寅', '辰', '午', '申', '戌']);
 
-const TRIGRAMS: { tri: string; deg: number; label: string; symbol: string }[] = [
+export const TRIGRAMS: { tri: string; deg: number; label: string; symbol: string }[] = [
   { tri: '坎', deg: 0, label: '北', symbol: '☵' },
   { tri: '艮', deg: 45, label: '东北', symbol: '☶' },
   { tri: '震', deg: 90, label: '东', symbol: '☳' },

@@ -1,10 +1,16 @@
-import { useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useMemo, useState } from 'react';
 import { getSolarEntry } from '@/engine-api/calendar';
 import { CopyContextButton } from '@/components/shared/CopyContextButton';
 import { ExportReportButton } from '@/components/shared/ExportReportButton';
 import { InterpretationCard } from '@/components/shared/InterpretationCard';
 import { FourLayerReport } from '@/components/shared/FourLayerReport';
 import { XingXiuChart } from '@/components/shared/XingXiuChart';
+import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
+
+const XingXiuChart3D = lazy(async () => {
+  const module = await import('@/components/shared/XingXiuChart3D');
+  return { default: module.XingXiuChart3D };
+});
 import { ZoomableSvg } from '@/components/shared/ZoomableSvg';
 import { useBirth } from '@/lib/birthContext';
 import { calcXingXiuEnveloped, type XingXiuData, type XingXiuEntry, type XiuMethod } from '@/engine-api/folklore';
@@ -40,6 +46,8 @@ const XIANG_COLOR: Record<string, string> = {
 };
 
 export function XingXiuWorkspace() {
+  const [chartMode, setChartMode] = useState<'svg' | '3d'>('svg');
+  const handle3DUnavailable = useCallback(() => setChartMode('svg'), []);
   const { solarBirth } = useBirth();
 
   const [method, setMethod] = useState<XiuMethod>('rotational');
@@ -215,10 +223,25 @@ export function XingXiuWorkspace() {
         {/* 右侧：四象方位图 + 四象分组 */}
         <div className="space-y-3">
           <div className="console-panel rounded-panel border border-jade-500/16 bg-ink-950/90 p-4 shadow-instrument">
-            <h3 className="mb-2 text-sm font-semibold text-jade-50">四象方位图</h3>
-            <ZoomableSvg title="二十八星宿四象方位图">
-              <XingXiuChart allXiu={data.allXiu} zhiXiu={data.zhiXiu} benMingXiu={data.benMingXiu} />
-            </ZoomableSvg>
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-jade-50">四象方位图</h3>
+                <p className="mt-1 text-[11px] text-jade-100/45">二维精读保留原始四边布局；三维星盘提供浑天视角、巡游和星环。</p>
+              </div>
+              <div className="inline-flex self-start rounded-full border border-jade-500/18 bg-white/[0.03] p-1" role="group" aria-label="星宿图显示模式">
+                <button type="button" className={`rounded-full px-3 py-1.5 text-xs transition ${chartMode === 'svg' ? 'bg-jade-500/18 text-jade-50' : 'text-jade-100/55 hover:text-jade-50'}`} aria-pressed={chartMode === 'svg'} onClick={() => setChartMode('svg')}>二维精读</button>
+                <button type="button" className={`rounded-full px-3 py-1.5 text-xs transition ${chartMode === '3d' ? 'bg-jade-500/18 text-jade-50' : 'text-jade-100/55 hover:text-jade-50'}`} aria-pressed={chartMode === '3d'} onClick={() => setChartMode('3d')}>三维星盘</button>
+              </div>
+            </div>
+            {chartMode === 'svg' ? (
+              <ZoomableSvg title="二十八星宿四象方位图">
+                <XingXiuChart allXiu={data.allXiu} zhiXiu={data.zhiXiu} benMingXiu={data.benMingXiu} />
+              </ZoomableSvg>
+            ) : (
+              <Suspense fallback={<LoadingSkeleton label="正在载入三维星盘" />}>
+                <XingXiuChart3D allXiu={data.allXiu} zhiXiu={data.zhiXiu} benMingXiu={data.benMingXiu} onUnavailable={handle3DUnavailable} />
+              </Suspense>
+            )}
             <div className="mt-2 flex items-center justify-center gap-4 text-[10px] text-jade-100/40">
               <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-gold-500/60" />★ 当日值宿</span>
               <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-purple-500/60" />◆ 本命星宿</span>

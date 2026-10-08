@@ -20,9 +20,57 @@ interface ZoomableSvgProps {
   className?: string;
 }
 
+/** SVG 被当作独立图片解码时不会继承页面 CSS，因此导出前要固化实际绘制样式。 */
+const SVG_PAINT_PROPERTIES = [
+  'color',
+  'fill',
+  'fill-opacity',
+  'fill-rule',
+  'stroke',
+  'stroke-opacity',
+  'stroke-width',
+  'stroke-linecap',
+  'stroke-linejoin',
+  'stroke-miterlimit',
+  'stroke-dasharray',
+  'stroke-dashoffset',
+  'opacity',
+  'font-family',
+  'font-size',
+  'font-style',
+  'font-weight',
+  'letter-spacing',
+  'text-anchor',
+  'dominant-baseline',
+  'paint-order',
+  'shape-rendering',
+  'text-rendering',
+  'stop-color',
+  'stop-opacity',
+] as const;
+
+function cloneSvgWithResolvedStyles(svg: SVGSVGElement): SVGSVGElement {
+  const clone = svg.cloneNode(true) as SVGSVGElement;
+  const sourceElements = [svg, ...Array.from(svg.querySelectorAll<SVGElement>('*'))];
+  const clonedElements = [clone, ...Array.from(clone.querySelectorAll<SVGElement>('*'))];
+
+  sourceElements.forEach((source, index) => {
+    const target = clonedElements[index];
+    if (!target) return;
+    const computed = getComputedStyle(source);
+    for (const property of SVG_PAINT_PROPERTIES) {
+      const value = computed.getPropertyValue(property);
+      if (value) target.style.setProperty(property, value);
+    }
+  });
+
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  return clone;
+}
+
 /** 把 SVG 元素渲染为 PNG Blob（2x 高 DPI）。返回 Promise<Blob | null>。 */
 async function svgToPngBlob(svg: SVGSVGElement, scale = 2): Promise<Blob | null> {
-  const clone = svg.cloneNode(true) as SVGSVGElement;
+  const clone = cloneSvgWithResolvedStyles(svg);
   // 从 viewBox 推断尺寸；缺则用 getBoundingClientRect
   const viewBox = clone.getAttribute('viewBox');
   let w = 0;
@@ -45,11 +93,13 @@ async function svgToPngBlob(svg: SVGSVGElement, scale = 2): Promise<Blob | null>
   clone.removeAttribute('class');
 
   const xml = new XMLSerializer().serializeToString(clone);
-  const svgUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+  const svgBlob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+  const svgUrl = URL.createObjectURL(svgBlob);
 
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
+      URL.revokeObjectURL(svgUrl);
       const canvas = document.createElement('canvas');
       canvas.width = Math.round(w * scale);
       canvas.height = Math.round(h * scale);
@@ -58,14 +108,17 @@ async function svgToPngBlob(svg: SVGSVGElement, scale = 2): Promise<Blob | null>
         resolve(null);
         return;
       }
-      // 纸面/夜面底色（Canvas 不能用 var()，读 CSS 变量计算值）
+      // 输出不带透明底，确保聊天软件、图片查看器和保存后的缩略图都能正常显示。
       const surfaceColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-surface').trim() || '#f7f3e8';
       ctx.fillStyle = surfaceColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       canvas.toBlob((blob) => resolve(blob), 'image/png');
     };
-    img.onerror = () => resolve(null);
+    img.onerror = () => {
+      URL.revokeObjectURL(svgUrl);
+      resolve(null);
+    };
     img.src = svgUrl;
   });
 }
@@ -103,20 +156,22 @@ export function ZoomableSvg({ title, children, className }: ZoomableSvgProps) {
         showToast('未找到图表');
         return;
       }
-      const blob = await svgToPngBlob(svg as SVGSVGElement);
-      if (!blob) {
-        showToast('复制失败：图表渲染异常');
+      if (!navigator.clipboard?.write || typeof ClipboardItem === 'undefined') {
+        showToast('当前浏览器不支持复制图像');
         return;
       }
+
       try {
-        if (navigator.clipboard && typeof ClipboardItem !== 'undefined') {
-          await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
-          showToast('已复制图像到剪贴板');
-        } else {
-          showToast('当前浏览器不支持复制图像');
-        }
+        // 在右键手势仍有效时立即发起 write；Blob Promise 在后台完成 SVG 光栅化。
+        // 若先 await 光栅化，Safari/Chromium 可能因用户激活已过期而拒绝剪贴板写入。
+        const pngPromise = svgToPngBlob(svg as SVGSVGElement).then((blob) => {
+          if (!blob) throw new Error('SVG rasterization failed');
+          return blob;
+        });
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngPromise })]);
+        showToast('已复制图像到剪贴板');
       } catch {
-        showToast('复制失败：浏览器拒绝写入剪贴板');
+        showToast('复制失败：浏览器拒绝写入剪贴板或图表渲染异常');
       }
     },
     [showToast],

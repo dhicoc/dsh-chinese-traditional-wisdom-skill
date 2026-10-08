@@ -452,3 +452,32 @@ describe('calcBaziEnveloped envelope 适配', () => {
     });
   });
 });
+
+describe('十神由日主五行生克 + 阴阳同异决定（回归：旧实现按天干索引差查表）', () => {
+  /**
+   * 旧实现只用 (目标天干索引 − 日主索引) 去查一张固定表，未考虑日主自身的五行。
+   * 十天干是五组五行对，因此「索引 +1」只在日主为阳干时表示同五行；
+   * 该表对阳干日主在 diff 1、diff 8 两处给出错值，对阴干日主错 6/10。
+   * 本用例以仓库既有 fixture（1990-06-15 12时男，local-approx 路径日主为丙火）
+   * 扫描 14 个连续流日，覆盖全部 10 个流日天干，逐一核对标准十神。
+   */
+  const expectedForBingDayMaster: Record<string, string> = {
+    甲: '偏印', 乙: '正印', 丙: '比肩', 丁: '劫财', 戊: '食神',
+    己: '伤官', 庚: '偏财', 辛: '正财', 壬: '七杀', 癸: '正官',
+  };
+
+  it('14 个连续流日覆盖全部十天干，十神逐一正确', () => {
+    const actual: Record<string, string> = {};
+    for (let day = 1; day <= 14; day += 1) {
+      const date = `2025-07-${String(day).padStart(2, '0')}`;
+      const snapshot = getBaziMonthDaySnapshot(
+        { year: 1990, month: 6, day: 15, hour: 12, gender: '男', useExactCalendar: false },
+        date,
+        getSolarEntry(),
+      );
+      if (snapshot.daily) actual[snapshot.daily.stem] = snapshot.daily.stemShiShen;
+    }
+    expect(Object.keys(actual).sort()).toEqual(Object.keys(expectedForBingDayMaster).sort());
+    expect(actual).toEqual(expectedForBingDayMaster);
+  });
+});

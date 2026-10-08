@@ -1,10 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { CopyContextButton } from '@/components/shared/CopyContextButton';
 import { ExportReportButton } from '@/components/shared/ExportReportButton';
 import { FengshuiCompass } from '@/components/shared/FengshuiCompass';
 import { KnowledgeReferencePanel } from '@/components/shared/KnowledgeReferencePanel';
 import { ZoomableSvg } from '@/components/shared/ZoomableSvg';
 import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
+
+const FengshuiCompass3D = lazy(async () => {
+  const module = await import('@/components/shared/FengshuiCompass3D');
+  return { default: module.FengshuiCompass3D };
+});
 import { createFengshuiExportReport } from '@/features/anonymousExport';
 import { createWorkspaceReportMetadata } from '@/legacy/reportMetadata';
 import {
@@ -39,6 +44,8 @@ function trigramToGuaNum(trigram: string): number | null {
 export function FengshuiWorkspace() {
   const { solarBirth } = useBirth();
   const [facing, setFacing] = useState('');
+  const [chartMode, setChartMode] = useState<'svg' | '3d'>('svg');
+  const handle3DUnavailable = useCallback(() => setChartMode('svg'), []);
   const [year, setYear] = useState(new Date().getFullYear());
   const [draftYear, setDraftYear] = useState(String(new Date().getFullYear()));
   useEffect(() => { setDraftYear(String(year)); }, [year]);
@@ -279,7 +286,7 @@ export function FengshuiWorkspace() {
         </aside>
 
         <section className="console-panel rounded-panel border border-jade-500/16 bg-ink-950/90 p-4 shadow-instrument">
-          <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+          <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
             <div>
               <h3 className="text-lg font-semibold text-jade-50">二十四山罗盘</h3>
               <p className="mt-1 text-sm leading-6 text-jade-100/55">
@@ -287,14 +294,20 @@ export function FengshuiWorkspace() {
                 {facing && ` 当前坐${facing.charAt(0)}向${facing.charAt(1)}，罗盘已旋转对准。`}
               </p>
             </div>
+            <div className="inline-flex self-start rounded-full border border-jade-500/18 bg-white/[0.03] p-1" role="group" aria-label="罗盘显示模式">
+              <button type="button" className={`rounded-full px-3 py-1.5 text-xs transition ${chartMode === 'svg' ? 'bg-jade-500/18 text-jade-50' : 'text-jade-100/55 hover:text-jade-50'}`} aria-pressed={chartMode === 'svg'} onClick={() => setChartMode('svg')}>二维精读</button>
+              <button type="button" className={`rounded-full px-3 py-1.5 text-xs transition ${chartMode === '3d' ? 'bg-jade-500/18 text-jade-50' : 'text-jade-100/55 hover:text-jade-50'}`} aria-pressed={chartMode === '3d'} onClick={() => setChartMode('3d')}>三维交互</button>
+            </div>
           </div>
           <div className="canvas-stage overflow-x-auto rounded-card border border-jade-500/18 bg-ink-950/92 p-3">
-            {ready ? (
+            {!ready ? <LoadingSkeleton label="正在排盘" /> : chartMode === 'svg' ? (
               <ZoomableSvg title={`二十四山罗盘${facing ? ` 坐${facing.charAt(0)}向${facing.charAt(1)}` : ''}`}>
                 <FengshuiCompass facing={facing || undefined} overlay={overlay} />
               </ZoomableSvg>
             ) : (
-              <LoadingSkeleton label="正在排盘" />
+              <Suspense fallback={<LoadingSkeleton label="正在载入三维罗盘" />}>
+                <FengshuiCompass3D facing={facing || undefined} overlay={overlay} onUnavailable={handle3DUnavailable} />
+              </Suspense>
             )}
           </div>
 

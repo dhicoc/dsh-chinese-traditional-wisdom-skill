@@ -171,23 +171,27 @@ def calc_hour_pillar(hour, day_gan_idx):
     return TIANGAN[stem_idx], DIZHI[branch_idx], stem_idx, branch_idx
 
 def calc_ten_gods(day_gan_idx, other_gan_idx):
-    """Calculate 十神 between day stem and another stem."""
+    """Calculate 十神 between day stem and another stem.
+
+    关系由「五行生克 + 阴阳同异」推导，与 TS 侧 baziEngine.getShiShen 口径一致：
+    同我→比肩(同阴阳)/劫财(异阴阳)、我生→食神/伤官、我克→偏财/正财、
+    克我→七杀/正官、生我→偏印/正印。
+    """
     wx_day = TIANGAN_WUXING[day_gan_idx]
     wx_other = TIANGAN_WUXING[other_gan_idx]
-    yy_day = day_gan_idx % 2  # 0=阳, 1=阴
-    yy_other = other_gan_idx % 2
+    same_yy = (day_gan_idx % 2) == (other_gan_idx % 2)
 
     from scripts.lib.wuxing import WUXING_SHENG, WUXING_KE
     if wx_day == wx_other:
-        return '比肩' if yy_day == yy_other else '劫财'
-    if WUXING_SHENG.get(wx_other) == wx_day:
-        return '偏印' if yy_day != yy_other else '正印'
+        return '比肩' if same_yy else '劫财'
     if WUXING_SHENG.get(wx_day) == wx_other:
-        return '食神' if yy_day == yy_other else '伤官'
-    if WUXING_KE.get(wx_other) == wx_day:
-        return '七杀' if yy_day != yy_other else '正官'
+        return '食神' if same_yy else '伤官'
     if WUXING_KE.get(wx_day) == wx_other:
-        return '偏财' if yy_day != yy_other else '正财'
+        return '偏财' if same_yy else '正财'
+    if WUXING_KE.get(wx_other) == wx_day:
+        return '七杀' if same_yy else '正官'
+    if WUXING_SHENG.get(wx_other) == wx_day:
+        return '偏印' if same_yy else '正印'
     return ''
 
 def calc_elements(gan, zhi, gan_weight=2, zhi_weight=2, hidden_weight=1):
@@ -263,7 +267,7 @@ def calculate(birth_date, gender='male', hour=None, birth_time=None):
     bazi = f'{y_gan}{y_zhi} {m_gan}{m_zhi} {d_gan}{d_zhi} {h_gan}{h_zhi}'
 
     # 五行统计
-    all_stems = [s['stem'] for p in pillars.values() if s['stem'] != '?']
+    all_stems = [p['stem'] for p in pillars.values() if p['stem'] != '?']
     all_branches = [p['branch'] for p in pillars.values() if p['branch'] != '?']
 
     elements = {'木':0,'火':0,'土':0,'金':0,'水':0}

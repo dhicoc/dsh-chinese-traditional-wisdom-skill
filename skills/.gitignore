@@ -51,6 +51,7 @@ venv/
 
 # Local UI dev artifacts / screenshots / test reports
 *.png
+apps/visual/.devserver/
 apps/visual/_final-*.png
 apps/visual/playwright-report*/
 apps/visual/test-results*/

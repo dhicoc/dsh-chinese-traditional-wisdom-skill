@@ -31,6 +31,7 @@ export default defineConfig({
             if (id.includes('lunar-javascript')) return 'vendor-lunar';
             if (id.includes('iztro')) return 'vendor-iztro';
             if (id.includes('3meta')) return 'vendor-3meta';
+            if (/[\\/]node_modules[\\/]three[\\/]/.test(id)) return 'vendor-three';
             if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) return 'vendor-react';
             return 'vendor';
           }
